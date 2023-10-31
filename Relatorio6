@@ -1,0 +1,47 @@
+.data
+prompt: .asciiz "Digite um número natural N: "
+result: .asciiz "A diferença entre o quadrado da soma e a soma dos quadrados é: "
+
+.text
+.globl main
+
+main:
+    # Imprimir o prompt e ler N
+    li $v0, 4
+    la $a0, prompt
+    syscall
+    li $v0, 5
+    syscall
+    move $t0, $v0  # $t0 contém N
+
+    # Inicializar as variáveis para a soma e a soma dos quadrados
+    li $t1, 0    # $t1 é a variável para a soma
+    li $t2, 0    # $t2 é a variável para a soma dos quadrados
+
+    # Calcular a soma e a soma dos quadrados
+    li $t3, 1    # $t3 é o contador
+loop:
+    beq $t3, $t0, done  # Se $t3 == N, sair do loop
+    add $t1, $t1, $t3  # Adicionar $t3 a $t1 para calcular a soma
+    add $t2, $t2, $t3  # Adicionar $t3 a $t2 para calcular a soma dos quadrados
+    addi $t3, $t3, 1   # Incrementar o contador
+    j loop
+
+done:
+    # Calcular o quadrado da soma
+    mul $t1, $t1, $t1
+
+    # Subtrair a soma dos quadrados do quadrado da soma
+    sub $t4, $t1, $t2
+
+    # Imprimir o resultado
+    li $v0, 4
+    la $a0, result
+    syscall
+    li $v0, 1
+    move $a0, $t4
+    syscall
+
+    # Terminar o programa
+    li $v0, 10
+    syscall
